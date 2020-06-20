@@ -13,7 +13,7 @@ type Config struct {
 	} `json:"http"`
 }
 
-var configFile = "./config/edge-iot-server-service.json"
+var configFile = "/var/edge-iot-server-service.json"
 var HttpHost string
 var HttpPort string
 
