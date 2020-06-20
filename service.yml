@@ -3,10 +3,11 @@ kind: Service
 metadata:
   name: edge-iot-server-service
 spec:
+  type: ClusterIP
   selector:
     app: edge-iot-server-service
   ports:
-  - port: 8080
-    targetPort: 8080
-    nodePort: 30080
-  type: NodePort
+  - port: 80
+    targetPort: 80
+    # nodePort: 30080
+  # type: NodePort
