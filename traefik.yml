@@ -1,27 +1,30 @@
-apiVersion: v1
-kind: Service
+apiVersion: helm.cattle.io/v1
+kind: HelmChart
 metadata:
-  name: traefik-web-ui
+  name: traefik
   namespace: kube-system
 spec:
-  selector:
-    k8s-app: traefik-ingress-lb
-  ports:
-  - port: 80
-    targetPort: 8080
----
-apiVersion: extensions/v1beta1
-kind: Ingress
-metadata:
-  name: traefik-web-ui
-  namespace: kube-system
-  annotations:
-    kubernetes.io/ingress.class: traefik
-spec:
-  rules:
-  - host: traefik.192.168.0.120
-    http:
-      paths:
-      - backend:
-          serviceName: traefik-web-ui
-          servicePort: 80
+  set:
+    dashboard.enabled: "true"
+    dashboard.domain: "traefik.192.168.0.120"
+  chart: https://%{KUBERNETES_API}%/static/charts/traefik-1.81.0.tgz
+  valuesContent: |-
+    rbac:
+      enabled: true
+    ssl:
+      enabled: true
+    metrics:
+      prometheus:
+        enabled: true
+    kubernetes:
+      ingressEndpoint:
+        useDefaultPublishedService: true
+    image: "rancher/library-traefik"
+    tolerations:
+      - key: "CriticalAddonsOnly"
+        operator: "Exists"
+      - key: "node-role.kubernetes.io/master"
+        operator: "Exists"
+        effect: "NoSchedule"
+        
+#/var/lib/rancher/k3s/server/manifests/traefik.yaml
